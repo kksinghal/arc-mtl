@@ -1,0 +1,5 @@
+Compute 11592 
+compress
+righthalf
+tophalf
+rot270

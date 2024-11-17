@@ -1,0 +1,4 @@
+Compute 3 
+lefthalf
+tophalf
+rot270

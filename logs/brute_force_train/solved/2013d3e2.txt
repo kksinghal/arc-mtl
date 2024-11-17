@@ -1,0 +1,5 @@
+Compute 5928 
+compress
+bottomhalf
+lefthalf
+rot90

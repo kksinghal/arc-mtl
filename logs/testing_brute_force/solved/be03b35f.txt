@@ -1,0 +1,5 @@
+Compute 102 
+bottomhalf
+bottomhalf
+lefthalf
+rot90

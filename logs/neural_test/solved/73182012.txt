@@ -1,0 +1,4 @@
+Compute 11527 
+compress
+tophalf
+lefthalf

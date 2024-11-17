@@ -1,0 +1,5 @@
+Compute 3154 
+cmirror
+cmirror
+compress
+rot180

@@ -5,15 +5,16 @@ import sandbox
 from helper import compare_grid
 from tqdm import tqdm
 
-SPLIT = "training" # or "evaluation"
-LOGS = "brute_force"
+SPLIT = "evaluation" # or "evaluation"
+LOGS = "neural_test"
 correct = 0
 total = 0
 correct_task_names = []
 incorrect_task_names = []
 
-files = os.listdir(f"ARC-AGI/data/{SPLIT}")
+files =  os.listdir(f"testing_brute_force/solved") #os.listdir(f"ARC-AGI/data/{SPLIT}") # os.listdir(f"brute_force/solved")
 files = [f.split(".")[0] for f in files]
+
 if not os.path.exists(f"./{LOGS}/solved"):
     os.makedirs(f"./{LOGS}/solved")
 if not os.path.exists(f"./{LOGS}/unsolved"):
@@ -21,7 +22,7 @@ if not os.path.exists(f"./{LOGS}/unsolved"):
 
 total_compute = 0
 for task_name in tqdm(files):
-    with open(f"ARC-AGI/data/training/{task_name}.json", "r") as f:
+    with open(f"ARC-AGI/data/{SPLIT}/{task_name}.json", "r") as f:
         task = json.load(f)
     
     train_inputs = []

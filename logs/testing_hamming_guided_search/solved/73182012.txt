@@ -1,0 +1,4 @@
+Compute 3 
+compress
+lefthalf
+tophalf
