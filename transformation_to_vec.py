@@ -12,7 +12,7 @@ class TransformationToVec:
         for model_name in os.listdir(model_dir):
             model_path = os.path.join(model_dir, model_name)
             model = Model()
-            model.load_state_dict(torch.load(model_path, map_location="cpu"))
+            model.load_state_dict(torch.load(model_path, map_location="mps"))
             self.models.append(model)
 
     def get(self, inputs, outputs):

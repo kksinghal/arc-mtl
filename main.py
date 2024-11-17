@@ -6,19 +6,21 @@ from helper import compare_grid
 from tqdm import tqdm
 
 SPLIT = "training" # or "evaluation"
-
+LOGS = "brute_force"
 correct = 0
 total = 0
 correct_task_names = []
 incorrect_task_names = []
 
-with open("subset.txt", "r") as f:
-    files = f.read().splitlines()
+files = os.listdir(f"ARC-AGI/data/{SPLIT}")
+files = [f.split(".")[0] for f in files]
+if not os.path.exists(f"./{LOGS}/solved"):
+    os.makedirs(f"./{LOGS}/solved")
+if not os.path.exists(f"./{LOGS}/unsolved"):
+    os.makedirs(f"./{LOGS}/unsolved")
 
 total_compute = 0
 for task_name in tqdm(files):
-    if task_name in os.listdir("./logs"): continue # TODO
-
     with open(f"ARC-AGI/data/training/{task_name}.json", "r") as f:
         task = json.load(f)
     
@@ -34,14 +36,14 @@ for task_name in tqdm(files):
         test_inputs.append(tuple(map(tuple, ex["input"])))
         test_outputs.append(tuple(map(tuple, ex["output"])))
 
-    fs, compute = search.brute_force(train_inputs, train_outputs) # TODO
+    fs, compute = search.neural_guided_search(train_inputs, train_outputs) # TODO
     total_compute += compute
     solved = True
     if fs:
         for i in range(len(test_inputs)):
             output = test_inputs[i]
             for f in fs:
-                syntactical_correctness, output = sandbox.run(f, test_inputs[i])
+                syntactical_correctness, output = sandbox.run(f, output)
                 if not syntactical_correctness: 
                     solved = False
                     break
@@ -58,13 +60,13 @@ for task_name in tqdm(files):
     total += 1
     print(correct/total, correct, total, compute)
     if solved:
-        with open(f"./logs/{task_name}.txt", "w") as file:
+        with open(f"./{LOGS}/solved/{task_name}.txt", "w") as file:
             file.write(f"Compute {compute} \n")
             for f in fs:
                 file.write(f.__name__ + "\n")
 
     elif fs and not solved:
-        with open(f"./logs/{task_name}.txt", "w") as file:
+        with open(f"./{LOGS}/unsolved/{task_name}.txt", "w") as file:
             file.write(f"Compute {compute} \n")
             for f in fs:
                 file.write(f.__name__ + "\n")
