@@ -12,11 +12,12 @@ total = 0
 correct_task_names = []
 incorrect_task_names = []
 
-files = os.listdir(f"ARC-AGI/data/{SPLIT}/")
-files = [f.split(".")[0] for f in files]
+with open("subset.txt", "r") as f:
+    files = f.read().splitlines()
 
+total_compute = 0
 for task_name in tqdm(files):
-    if task_name in os.listdir("./logs"): continue
+    if task_name in os.listdir("./logs"): continue # TODO
 
     with open(f"ARC-AGI/data/training/{task_name}.json", "r") as f:
         task = json.load(f)
@@ -33,7 +34,8 @@ for task_name in tqdm(files):
         test_inputs.append(tuple(map(tuple, ex["input"])))
         test_outputs.append(tuple(map(tuple, ex["output"])))
 
-    fs = search.brute_force(train_inputs, train_outputs)
+    fs, compute = search.brute_force(train_inputs, train_outputs) # TODO
+    total_compute += compute
     solved = True
     if fs:
         for i in range(len(test_inputs)):
@@ -54,9 +56,18 @@ for task_name in tqdm(files):
         incorrect_task_names.append(task_name)
 
     total += 1
-    print(correct/total, correct, total)
+    print(correct/total, correct, total, compute)
     if solved:
         with open(f"./logs/{task_name}.txt", "w") as file:
-            print(fs)
+            file.write(f"Compute {compute} \n")
             for f in fs:
                 file.write(f.__name__ + "\n")
+
+    elif fs and not solved:
+        with open(f"./logs/{task_name}.txt", "w") as file:
+            file.write(f"Compute {compute} \n")
+            for f in fs:
+                file.write(f.__name__ + "\n")
+
+
+print("Accuracy:", correct/total, correct, total, total_compute)
